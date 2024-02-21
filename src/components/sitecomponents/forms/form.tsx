@@ -1,12 +1,15 @@
+import FormButton from "@/lib/button";
 import { BLOG } from "@/lib/schema/schema.db";
+import { revalidatePath } from "next/cache";
 
 export const BlogForm = () => {
   const addPost = async (formData: FormData) => {
     "use server";
-    const blog = await BLOG.create({
+    await BLOG.create({
       title: formData.get("title") as string,
       body: formData.get("body") as string,
     });
+    revalidatePath("/all-blogs");
   };
   return (
     <form className="space-y-4" action={addPost}>
@@ -23,9 +26,7 @@ export const BlogForm = () => {
         placeholder="enter blog body"
         className="w-full p-2 rounded-md bg-transparent resize-none border"
       ></textarea>
-      <button className="bg-white text-black px-3 py-1 rounded-md">
-        Submit
-      </button>
+      <FormButton />
     </form>
   );
 };
